@@ -1,0 +1,2 @@
+# ChatGPT 分流规则
+hostname = chat.openai.com, openai.com, api.openai.com, platform.openai.com
