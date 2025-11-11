@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>返现计算器</title>
+  <style>
+    body {
+      font-family: "SF Pro Display", "PingFang SC", "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #a3b8ff, #768fff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      padding: 35px 28px 40px;
+      width: 90%;
+      max-width: 420px;
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    h2 {
+      font-size: 22px;
+      margin-bottom: 25px;
+      color: #222;
+    }
+
+    label {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #555;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 18px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    input[type="number"]:focus {
+      border-color: #768fff;
+      outline: none;
+      box-shadow: 0 0 6px rgba(118,143,255,0.3);
+    }
+
+    .checkbox {
+      margin: 18px 0 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 16px;
+      color: #444;
+    }
+
+    .result-box {
+      background: #f8faff;
+      border: 2px solid #dbe2ff;
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.4s ease;
+    }
+
+    .result-label {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .result-amount {
+      font-size: 36px;
+      font-weight: 700;
+      color: #4656f0;
+      letter-spacing: 1px;
+      transition: 0.3s;
+    }
+
+    .result-highlight {
+      transform: scale(1.05);
+      text-shadow: 0 0 10px rgba(118,143,255,0.4);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🚗返现计算器</h2>
+
+    <label for="amount">请输入商业险金额（元）：</label>
+    <input id="amount" type="number" placeholder="例如：5000" oninput="calc()">
+
+    <div class="checkbox">
+      <input type="checkbox" id="driverInsurance" onchange="calc()">
+      <label for="driverInsurance">客户是否购买驾乘险（430元）</label>
+    </div>
+
+    <div class="result-box">
+      <div class="result-label">返现金额</div>
+      <div class="result-amount" id="result">—</div>
+    </div>
+  </div>
+
+  <script>
+    function animateNumber(element, start, end, duration) {
+      const startTime = performance.now();
+      function update(now) {
+        const progress = Math.min((now - startTime) / duration, 1);
+        const value = start + (end - start) * progress;
+        element.textContent = value.toFixed(2) + ' 元';
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    function calc() {
+      const amount = parseFloat(document.getElementById('amount').value) || 0;
+      const hasDriver = document.getElementById('driverInsurance').checked;
+      const resultDiv = document.getElementById('result');
+
+      let cashback = (amount / 1.06) * 0.1;
+      if (hasDriver) cashback += 121;
+
+      if (amount > 0) {
+        const currentValue = parseFloat(resultDiv.textContent) || 0;
+        resultDiv.classList.add('result-highlight');
+        animateNumber(resultDiv, currentValue, cashback, 400);
+        setTimeout(() => resultDiv.classList.remove('result-highlight'), 300);
+      } else {
+        resultDiv.textContent = '—';
+      }
+    }
+  </script>
+</body>
+</html>
